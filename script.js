@@ -1,11 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // ロゴシミュレーターのチェックボックスグループのセレクタ
     const planSelectCheckboxes = document.querySelectorAll('input[name="planSelect"]');
     const logoGuideSelectCheckboxes = document.querySelectorAll('input[name="logoGuideSelect"]');
     const optionSelectCheckboxes = document.querySelectorAll('input[name="optionSelect"]');
+
     const totalPriceElement = document.getElementById('totalPrice');
     const exportPdfButton = document.getElementById('exportPdfButton');
-
-    // ★★★ トグル機能の要素を取得 ★★★
+    
+    // ロゴシミュレーターのトグル要素を取得
     const toggleHeaders = document.querySelectorAll('.toggle-header');
 
     // ★★★ 排他選択を制御する関数（変更なし） ★★★
@@ -13,9 +15,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const clickedCheckbox = event.target;
         const checkboxesInGroup = document.querySelectorAll(`input[name="${groupName}"]`);
 
+        // ロゴシミュレーターでは、logoGuideSelectは「none」がデフォルトで、両方チェックを外せることは想定しない
+        // planSelectも常に1つは選択
+        const allowNoneSelected = false; // ロゴシミュレーターでは、常にどちらか1つは選択されている状態を維持
+
         if (!clickedCheckbox.checked) {
             const currentlyChecked = Array.from(checkboxesInGroup).filter(cb => cb.checked);
-            if (currentlyChecked.length === 0) {
+            if (!allowNoneSelected && currentlyChecked.length === 0) {
                 clickedCheckbox.checked = true;
             }
         }
@@ -26,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
         
-        if (!clickedCheckbox.checked) {
+        if (!allowNoneSelected && !clickedCheckbox.checked) {
             clickedCheckbox.checked = true;
         }
 
@@ -49,28 +55,47 @@ document.addEventListener('DOMContentLoaded', () => {
         totalPriceElement.textContent = currentTotal.toLocaleString();
     }
 
-    // ★★★ トグル機能のイベントリスナーを追加 ★★★
+    // ★★★ イベントリスナーの設定 ★★★
+
+    // 1. 基本料金 (planSelect) (排他選択)
+    planSelectCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', (event) => {
+            handleExclusiveCheckboxSelection(event, 'planSelect');
+        });
+    });
+
+    // 2. ロゴガイドライン選択 (logoGuideSelect) (排他選択)
+    logoGuideSelectCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', (event) => {
+            handleExclusiveCheckboxSelection(event, 'logoGuideSelect');
+        });
+    });
+
+    // 3. オプション（任意） (通常のチェックボックス)
+    optionSelectCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', calculateAndDisplayTotal);
+    });
+
+    // ★★★ トグル機能のイベントリスナー（変更なし） ★★★
     toggleHeaders.forEach(header => {
         header.addEventListener('click', () => {
-            const toggleContent = header.nextElementSibling; // ヘッダーの次の要素がコンテンツ
+            const toggleContent = header.nextElementSibling;
             if (toggleContent && toggleContent.classList.contains('toggle-content')) {
-                // displayプロパティを切り替える
                 if (toggleContent.style.display === 'block') {
                     toggleContent.style.display = 'none';
-                    header.classList.remove('active'); // アイコン回転用クラス
+                    header.classList.remove('active');
                 } else {
                     toggleContent.style.display = 'block';
-                    header.classList.add('active'); // アイコン回転用クラス
+                    header.classList.add('active');
                 }
             }
         });
     });
 
-    // ★★★ PDF出力ボタンのイベントリスナー（変更なし） ★★★
+    // ★★★ PDF出力ボタンのイベントリスナー（ファイル名のみ変更） ★★★
     exportPdfButton.addEventListener('click', () => {
-        // PDF出力前に、一時的に全てのトグルを開く
         toggleHeaders.forEach(header => {
-            header.classList.add('active'); // CSSで回転させるため
+            header.classList.add('active');
             const toggleContent = header.nextElementSibling;
             if (toggleContent && toggleContent.classList.contains('toggle-content')) {
                 toggleContent.style.display = 'block';
@@ -106,19 +131,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const day = now.getDate().toString().padStart(2, '0');
             const hours = now.getHours().toString().padStart(2, '0');
             const minutes = now.getMinutes().toString().padStart(2, '0');
-            const fileName = `estimate_${year}${month}${day}_${hours}${minutes}.pdf`;
+            // ロゴシミュレーター用のファイル名に変更
+            const fileName = `logo_estimate_${year}${month}${day}_${hours}${minutes}.pdf`; 
 
             pdf.save(fileName);
-
-            // PDF出力後、トグルを元の状態に戻す（必要であれば）
-            // ただし、@media printでdisplay: block !important;を設定しているため、
-            // 画面表示は影響を受けません。ここでは特に戻す処理は不要です。
-            // むしろ、PDF出力時の見た目をCSSで制御する方が綺麗です。
         });
     });
 
-    // ★★★ ページロード時の初期設定（変更なし） ★★★
-    function initializeExclusiveSelection(checkboxesInGroup, defaultValue) {
+    // ★★★ ページロード時の初期設定 ★★★
+    function initializeExclusiveSelection(checkboxesInGroup, defaultValue = null) {
         let isAnyChecked = false;
         checkboxesInGroup.forEach(checkbox => {
             if (checkbox.checked) {
@@ -128,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        if (!isAnyChecked) {
+        if (!isAnyChecked && defaultValue !== null) {
             const defaultCheckbox = document.querySelector(`input[name="${checkboxesInGroup[0].name}"][value="${defaultValue}"]`);
             if (defaultCheckbox) {
                 defaultCheckbox.checked = true;
@@ -136,8 +157,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    initializeExclusiveSelection(planSelectCheckboxes, 'light');
-    initializeExclusiveSelection(logoGuideSelectCheckboxes, 'none');
+    // 各グループの初期選択を適用
+    initializeExclusiveSelection(planSelectCheckboxes, 'light'); // 基本料金のデフォルトはライトプラン
+    initializeExclusiveSelection(logoGuideSelectCheckboxes, 'none'); // ロゴガイドラインのデフォルトは不要
     
+    // オプションは初期状態では選択しない
+    optionSelectCheckboxes.forEach(checkbox => checkbox.checked = false);
+
     calculateAndDisplayTotal();
 });

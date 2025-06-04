@@ -14,7 +14,7 @@ body {
 }
 
 .container {
-    max-width: 1000px;
+    max-width: 1000px; /* 横幅を広げる (2カラム用) */
     width: 100%;
     background-color: #ffffff;
     border-radius: 8px;
@@ -30,6 +30,7 @@ h1 {
     text-align: center;
 }
 
+/* 2カラムレイアウトの定義 */
 .content-wrapper {
     display: flex;
     flex-wrap: wrap;
@@ -42,6 +43,7 @@ h1 {
     min-width: 300px;
 }
 
+/* 画面幅が768px以下の場合、1カラムにする */
 @media (max-width: 768px) {
     .content-wrapper {
         flex-direction: column;
@@ -55,7 +57,7 @@ h1 {
     .section:last-of-type {
         border-bottom: 1px solid #eee;
     }
-    .right-column .section:last-of-type {
+    .right-column .section:last-of-type { 
         border-bottom: none;
     }
 }
@@ -101,46 +103,44 @@ input[type="checkbox"] {
     word-wrap: break-word;
 }
 
-/* ★★★ トグル関連の新しいスタイル ★★★ */
+/* トグル関連のスタイル */
 .toggle-container {
-    margin-left: 28px; /* チェックボックスのインデントに合わせる */
+    margin-left: 28px;
     margin-bottom: 20px;
-    border: 1px solid #eee; /* 枠線 */
+    border: 1px solid #eee;
     border-radius: 4px;
-    overflow: hidden; /* コンテンツがはみ出さないように */
+    overflow: hidden;
     background-color: #fdfdfd;
 }
 
 .toggle-header {
     font-size: 1em;
     color: #007bff;
-    margin: 0; /* h4のデフォルトマージンをリセット */
+    margin: 0;
     padding: 10px 15px;
     cursor: pointer;
-    background-color: #e6f2ff; /* ヘッダーの背景色 */
+    background-color: #e6f2ff;
     display: flex;
-    justify-content: space-between; /* テキストとアイコンを両端に */
+    justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #ccddee; /* ヘッダーの下線 */
+    border-bottom: 1px solid #ccddee;
 }
 
 .toggle-header:hover {
-    background-color: #dbeaff; /* ホバー時の色 */
+    background-color: #dbeaff;
 }
 
 .toggle-icon {
-    transition: transform 0.2s ease-in-out; /* アイコンのアニメーション */
+    transition: transform 0.2s ease-in-out;
 }
 
 .toggle-header.active .toggle-icon {
-    transform: rotate(180deg); /* アクティブ時にアイコンを回転 */
+    transform: rotate(180deg);
 }
 
 .toggle-content {
     padding: 10px 15px;
     display: none; /* 初期状態では非表示 */
-    /* transition: all 0.3s ease-in-out; トランジションはdisplay:noneでは直接効かない */
-    /* JavaScriptでdisplay:block/noneを切り替える */
 }
 
 .toggle-content ul {
@@ -212,15 +212,14 @@ hr {
     body {
         background-color: #fff;
     }
-    /* PDF出力時にはトグルを全て開く */
     .toggle-content {
         display: block !important;
     }
     .toggle-header .toggle-icon {
-        display: none; /* PDFではアイコンは不要 */
+        display: none;
     }
     .toggle-container {
-        border: none; /* PDFでは枠線不要 */
+        border: none;
         background-color: transparent;
         padding: 0;
         margin-left: 0;
@@ -231,6 +230,6 @@ hr {
         padding-left: 0;
     }
     .toggle-content ul {
-        margin-left: 28px; /* PDFでのインデント */
+        margin-left: 28px;
     }
 }
