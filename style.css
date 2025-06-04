@@ -109,7 +109,7 @@ h1 {
         padding-bottom: 20px;
         margin-bottom: 25px;
     }
-    .right-column .section:last-of-type { 
+    .right-column .section:last-of-type {
         border-bottom: none;
         padding-bottom: 0;
         margin-bottom: 0;
@@ -312,14 +312,11 @@ input[type="checkbox"]:focus {
     font-weight: 600;
 }
 
+/* 合計金額のグラデーションをなくす */
 #totalPrice {
     font-size: 3.5em;
     font-weight: bold;
-    background: linear-gradient(to right, var(--accent-start-color), var(--accent-end-color));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    color: transparent; /* fallback for browsers that don't support text-fill-color */
+    color: var(--accent-start-color); /* 通常のテキストカラーに設定 */
     display: inline-block;
     margin-top: 10px;
     margin-bottom: 10px;
@@ -329,11 +326,7 @@ input[type="checkbox"]:focus {
 .currency-yen {
     font-size: 1.5em;
     font-weight: bold;
-    background: linear-gradient(to right, var(--accent-start-color), var(--accent-end-color));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    color: transparent; /* fallback */
+    color: var(--accent-start-color); /* 通常のテキストカラーに設定 */
     margin-left: 5px;
     vertical-align: middle;
     display: inline-block;
@@ -372,6 +365,108 @@ input[type="checkbox"]:focus {
     box-shadow: 0 2px 5px rgba(140, 130, 208, 0.3);
 }
 
+/* アラートダイアログのスタイルここから */
+.alert-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    /* display: none; /* 初期状態はJSで制御するためCSSからは削除 */
+}
+
+.alert-dialog {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 320px; /* iPhoneサイズの最大幅を意識 */
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+    color: #333;
+}
+
+.alert-header {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px 10px;
+    border-bottom: 1px solid #f0f0f0;
+    background-color: #f7f7f7;
+}
+
+.alert-icon {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+.alert-icon::before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(45deg, var(--accent-start-color), var(--accent-end-color));
+    border-radius: 5px;
+    vertical-align: middle;
+    transform: rotate(45deg);
+    margin-left: 2px; /* アイコンの位置調整 */
+    margin-right: 10px;
+}
+
+
+.alert-header p {
+    margin: 0;
+    font-weight: 600;
+    font-size: 0.95em;
+    color: var(--text-color-dark);
+}
+
+.alert-body {
+    padding: 20px;
+    font-size: 0.9em;
+    line-height: 1.5;
+    color: var(--text-color-medium);
+}
+
+.alert-body p {
+    margin: 0;
+}
+
+.alert-footer {
+    padding: 10px 20px 15px;
+    text-align: right;
+    border-top: 1px solid #f0f0f0;
+}
+
+#alertOkButton {
+    background-color: #007aff; /* iOSのOKボタンの色に寄せる */
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+#alertOkButton:hover {
+    background-color: #005bb5;
+}
+
+#alertOkButton:active {
+    background-color: #003e80;
+}
+/* アラートダイアログのスタイルここまで */
+
 
 /* PDF出力時に非表示にする要素 (例: PDFボタン自体) */
 @media print {
@@ -382,9 +477,6 @@ input[type="checkbox"]:focus {
         align-items: flex-start;
         font-size: 9pt; /* 基本フォントサイズをさらに小さく */
         margin: 0; /* マージンをリセット */
-        /* PDFを1枚に収めるための最終手段（ブラウザ依存度高） */
-        /* transform: scale(0.8); */ /* 全体を縮小するが、文字の鮮明度が落ちる可能性あり */
-        /* transform-origin: top left; */
     }
     .container {
         box-shadow: none;
@@ -508,28 +600,29 @@ input[type="checkbox"]:focus {
         font-size: 1.1em;
         margin-bottom: 5px;
     }
+    /* PDF出力時に金額が適切に表示されるように修正 */
     #totalPrice {
         font-size: 2.2em; /* 印刷時の金額サイズを調整 */
         margin-top: 5px;
         margin-bottom: 5px;
         background: none;
         -webkit-background-clip: unset;
-        -webkit-text-fill-color: var(--accent-start-color);
-        color: var(--accent-start-color);
+        -webkit-text-fill-color: var(--text-color-dark); /* 印刷時はグラデーションではなく通常のダークカラーに */
+        color: var(--text-color-dark); /* 印刷時はグラデーションではなく通常のダークカラーに */
     }
     .currency-yen {
         font-size: 0.9em; /* 印刷時の「円」のサイズを調整 */
         background: none;
         -webkit-background-clip: unset;
-        -webkit-text-fill-color: var(--accent-start-color);
-        color: var(--accent-start-color);
+        -webkit-text-fill-color: var(--text-color-dark); /* 印刷時はグラデーションではなく通常のダークカラーに */
+        color: var(--text-color-dark); /* 印刷時はグラデーションではなく通常のダークカラーに */
     }
     .tax-info {
         font-size: 0.7em;
     }
 
     /* その他の非表示要素 */
-    #exportPdfButton {
+    #exportPdfButton, .alert-overlay { /* アラートオーバーレイも印刷時は非表示にする */
         display: none !important;
     }
 }
