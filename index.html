@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ロゴ制作見積もりシミュレーター</title> <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/2024/06/04/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+    <div class="container" id="printableArea">
+        <h1>ロゴ制作見積もりシミュレーター</h1> <div class="content-wrapper">
+
+            <div class="left-column">
+                <div class="section">
+                    <h2>基本料金</h2>
+                    <label class="checkbox-group-item">
+                        <input type="checkbox" name="planSelect" value="light" data-price="70000">
+                        ライトプラン: 70,000円
+                    </label>
+                    <p class="description">
+                        ・1案 + 簡易修正1回のみ。お手頃にロゴを制作したい方におすすめです。
+                    </p>
+
+                    <label class="checkbox-group-item">
+                        <input type="checkbox" name="planSelect" value="regular" data-price="120000">
+                        レギュラープラン: 120,000円
+                    </label>
+                    <p class="description">
+                        ・修正2〜3回・提案数3案の一番人気プランです！
+                    </p>
+                </div>
+
+                <div class="section">
+                    <h2>ロゴガイドラインのご選択</h2>
+                    <label class="checkbox-group-item">
+                        <input type="checkbox" name="logoGuideSelect" value="none" data-price="0">
+                        ガイドラインは不要: 0円
+                    </label>
+                    <div class="toggle-container">
+                        <h4 class="toggle-header">こんな方におすすめ <span class="toggle-icon">▼</span></h4>
+                        <div class="toggle-content">
+                            <ul>
+                                <li>ロゴの使い方がご自身で分かる</li>
+                                <li>社内・個人での使用が前提で、外部に渡す予定がない</li>
+                                <li>1人で事業をしていて、今後の展開が未定</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <label class="checkbox-group-item">
+                        <input type="checkbox" name="logoGuideSelect" value="simple" data-price="10000">
+                        簡易ガイド: 10,000円
+                    </label>
+                    <div class="toggle-container">
+                        <h4 class="toggle-header">こんな方におすすめ <span class="toggle-icon">▼</span></h4>
+                        <div class="toggle-content">
+                            <ul>
+                                <li>社内チームや外注先と共有する可能性がある</li>
+                                <li>知人にチラシを作ってもらう/SNS運用を外注する などの可能性がある</li>
+                                <li>Webや紙に使う場面があるが、規模は小さめ</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <label class="checkbox-group-item">
+                        <input type="checkbox" name="logoGuideSelect" value="pdf" data-price="20000">
+                        PDFガイドライン: 20,000円
+                    </label>
+                    <div class="toggle-container">
+                        <h4 class="toggle-header">こんな方におすすめ <span class="toggle-icon">▼</span></h4>
+                        <div class="toggle-content">
+                            <ul>
+                                <li>ロゴを使ってチラシ・名刺・Web・広告など複数メディアで展開する予定がある</li>
+                                <li>他のデザイナーや企業と協業する可能性がある</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-column">
+                <div class="section">
+                    <h2>オプション（任意）</h2>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="optionSelect" value="designOriginal" data-price="20000">
+                        デザインデータ原本（※アウトライン化する前のデータ）: 20,000円
+                    </label>
+                </div>
+
+                <hr>
+
+                <div class="total-area">
+                    <h3>合計金額: <span id="totalPrice">000000</span>円</h3>
+                    <button id="exportPdfButton">見積書をPDFで出力する</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
